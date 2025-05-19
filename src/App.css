@@ -1,0 +1,138 @@
+/* General styling for the app */
+.App {
+  background-color: #000;
+  color: #fff;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav-bar {
+  width: 100%;
+  background-color: #222;
+  padding: 15px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nav-bar ul {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-bar ul li {
+  margin: 0 20px;
+}
+
+.nav-bar ul li a {
+  color: #61dafb;
+  text-decoration: none;
+  font-size: 1.1em;
+  font-weight: bold;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.nav-bar ul li a:hover {
+  color: #f39c12;
+  transform: scale(1.1);
+}
+
+.main-content {
+  width: 90%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.home {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.home h1 {
+  font-size: 2em;
+  color: #f39c12;
+  margin-bottom: 10px;
+}
+
+.home p {
+  font-size: 1.2em;
+  color: #ddd;
+}
+
+/* Route Transition Animations */
+.route-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.route-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.route-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.route-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 500ms, transform 500ms;
+}
+
+/* Dashboard Styling */
+.dashboard {
+  margin-top: 30px;
+  padding: 20px;
+  width: 100%;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  color: #fff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nav-bar ul {
+    flex-direction: column;
+  }
+
+  .nav-bar ul li {
+    margin: 10px 0;
+  }
+
+  .main-content {
+    width: 95%;
+  }
+}
+
+
+/* App.css */
+
+.route-transition-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+.route-transition-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 700ms ease-out, transform 700ms ease-out;
+}
+.route-transition-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+.route-transition-exit-active {
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 700ms ease-in, transform 700ms ease-in;
+}
