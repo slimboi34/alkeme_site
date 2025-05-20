@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import axios from 'axios';
 import * as d3 from 'd3';
 
@@ -7,50 +7,11 @@ function ChangePercent24Hr({ animationDuration = 1200, animationEase = d3.easeEl
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: 850 });
   const chartRef = useRef(null);
 
-  // Update chart dimensions on window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setDimensions({ width: window.innerWidth, height: window.innerHeight * 0.8 });
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Fetch data on component mount
-  useEffect(() => {
-    axios
-      .get('https://api.coincap.io/v2/assets/')
-      .then((response) => {
-        if (response.data && response.data.data) {
-          const formattedData = response.data.data
-            .map((asset) => ({
-              id: asset.id,
-              changePercent24Hr: parseFloat(asset.changePercent24Hr),
-            }))
-            .filter((asset) => !isNaN(asset.changePercent24Hr));
-          setData(formattedData);
-        } else {
-          console.error('Unexpected data format:', response.data);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
-
-  // Trigger animation when data changes
-  useEffect(() => {
-    if (data.length > 0) {
-      renderChart(data);
-    }
-  }, [data, dimensions]);
-
-  const renderChart = (chartData) => {
+  const renderChart = useCallback((chartData) => {
     const { width, height } = dimensions;
     const margin = 60;
     const format = d3.format('.2f');
 
-    // Remove any previous SVG content to avoid duplications
     d3.select(chartRef.current).selectAll('*').remove();
 
     const svg = d3
@@ -60,7 +21,6 @@ function ChangePercent24Hr({ animationDuration = 1200, animationEase = d3.easeEl
       .style('font', '14px sans-serif');
 
     const color = d3.scaleSequential().domain([-10, 10]).interpolator(d3.interpolateRdYlGn);
-
     const pack = d3.pack().size([width - margin * 2, height - margin * 2]).padding(10);
 
     const root = d3
@@ -137,7 +97,42 @@ function ChangePercent24Hr({ animationDuration = 1200, animationEase = d3.easeEl
     }).on('mouseout', () => {
       svg.select('.tooltip').remove();
     });
-  };
+  }, [dimensions, animationDuration, animationEase]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setDimensions({ width: window.innerWidth, height: window.innerHeight * 0.8 });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get('https://api.coincap.io/v2/assets/')
+      .then((response) => {
+        if (response.data && response.data.data) {
+          const formattedData = response.data.data
+            .map((asset) => ({
+              id: asset.id,
+              changePercent24Hr: parseFloat(asset.changePercent24Hr),
+            }))
+            .filter((asset) => !isNaN(asset.changePercent24Hr));
+          setData(formattedData);
+        } else {
+          console.error('Unexpected data format:', response.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      renderChart(data);
+    }
+  }, [data, dimensions, renderChart]);
 
   return (
     <div style={{ textAlign: 'center', padding: '10px' }}>

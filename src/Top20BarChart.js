@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import * as d3 from 'd3';
 
 function Top20BarChart({ top20Currencies }) {
-  useEffect(() => {
-    if (Object.keys(top20Currencies).length > 0) createD3Chart();
-  }, [top20Currencies]);
-
-  const createD3Chart = () => {
+  const createD3Chart = useCallback(() => {
     const width = 928;
     const height = 500;
     const margin = { top: 20, right: 30, bottom: 50, left: 50 };
@@ -45,7 +41,13 @@ function Top20BarChart({ top20Currencies }) {
     svg.append("g")
       .attr("transform", `translate(${margin.left},0)`)
       .call(d3.axisLeft(y));
-  };
+  }, [top20Currencies]);
+
+  useEffect(() => {
+    if (Object.keys(top20Currencies).length > 0) {
+      createD3Chart();
+    }
+  }, [top20Currencies, createD3Chart]);
 
   return <div id="d3-chart-container" style={{ marginTop: '50px' }}></div>;
 }
